@@ -1,0 +1,130 @@
+
+body { margin: 0; font-family: 'Noto Sans KR', sans-serif; background: #f4f7f6; color: #333; }
+.page { display: none; width: 100%; height: 100vh; }
+.page.active { display: block !important; }
+.hidden { display: none !important; }
+
+
+.center-box { 
+    width: 320px; margin: 80px auto; padding: 40px; 
+    background: white; border-radius: 15px; 
+    text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+}
+input { padding: 12px; border: 1px solid #ddd; border-radius: 6px; width: 100%; box-sizing: border-box; margin-bottom: 12px; }
+button { padding: 12px 15px; cursor: pointer; border: none; border-radius: 6px; font-weight: bold; transition: 0.2s; width: 100%; }
+
+.btn-blue { background: #007bff; color: white; } .btn-blue:hover { background: #0056b3; }
+.btn-red { background: #dc3545; color: white; } .btn-red:hover { background: #a71d2a; }
+.btn-warning { background: #ffc107; color: #333; } .btn-warning:hover { background: #e0a800; }
+.btn-link { background: transparent; color: #666; text-decoration: underline; }
+
+.btn-small { 
+    width: auto !important; 
+    padding: 8px 16px; 
+    font-size: 14px; 
+    background: #eee; 
+    color: #333; 
+    border-radius: 6px;
+    white-space: nowrap;
+}
+.btn-small:hover { background: #e0e0e0; }
+.btn-red-text { color: #d32f2f; background: #fff; border: 1px solid #ef9a9a; }
+.btn-logout { width: auto !important; padding: 8px 16px; font-size: 14px; margin: 0; }
+
+header { 
+    background: white; padding: 12px 20px; 
+    display: flex; justify-content: space-between; 
+    align-items: center; border-bottom: 1px solid #ddd; 
+}
+
+
+.selector-bar { 
+    padding: 15px 20px; background: #fff; border-bottom: 1px solid #eee; 
+    display: flex; align-items: center; position: relative; height: 40px;
+}
+.select-group { display: flex; gap: 10px; }
+.selector-bar select { padding: 8px; border-radius: 5px; border: 1px solid #ccc; min-width: 150px; }
+
+.center-controls {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    display: flex; gap: 10px;
+}
+
+
+#admin-panel { background: #fff; border-bottom: 1px solid #ddd; }
+
+.admin-tabs { 
+    display: flex; background: #f1f3f4; border-bottom: 1px solid #ddd; 
+    justify-content: flex-start; padding-left: 20px; 
+}
+.admin-tabs button { background: transparent; border: none; border-bottom: 3px solid transparent; border-radius: 0; padding: 15px 20px; width: auto; color: #666; }
+.admin-tabs button.active { border-bottom-color: #007bff; color: #007bff; font-weight: bold; background: #fff; }
+
+.admin-controls { padding: 15px 20px; display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+
+.admin-controls-center { 
+    display: flex; align-items: center; gap: 70px; 
+    flex-wrap: wrap; justify-content: flex-start; 
+}
+
+.group { display: flex; align-items: center; gap: 8px; }
+.vertical-line { width: 1px; height: 24px; background: #ddd; margin: 0 5px; }
+
+#admin-total-seats { 
+    width: 60px; 
+    text-align: center; 
+    padding: 6px; 
+    border-radius: 4px; 
+    border: 1px solid #ccc;
+    
+    
+    transform: translateY(3px); 
+   
+}
+
+.msg-text { color: #007bff; font-size: 0.9em; font-weight: bold; margin-top: 5px; }
+
+.lost-table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+.lost-table th, .lost-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+.lost-table th { background: #f8f9fa; }
+
+/* === Main Layout === */
+.container { display: flex; height: calc(100vh - 140px); } 
+.sidebar { width: 300px; background: white; padding: 20px; border-right: 1px solid #ddd; overflow-y: auto; flex-shrink: 0; }
+.map-area { flex: 1; position: relative; background: #e9ecef; overflow: hidden; }
+#map-placeholder { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #888; font-size: 1.2em; }
+
+/* === Seat Styling === */
+.seat { 
+    position: absolute; width: 60px; height: 60px; 
+    background: white; border: 2px solid #bdc3c7; border-radius: 10px; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    font-weight: bold; cursor: pointer; user-select: none; 
+    box-shadow: 2px 4px 6px rgba(0,0,0,0.1); z-index: 5; 
+}
+.seat:hover { z-index: 10; transform: scale(1.02); }
+.seat.has-power { background-color: #fff9c4; border-color: #fbc02d; }
+.seat.occupied { background-color: #ffcdd2; border-color: #ef5350; color: #c62828; }
+.seat.mine { background-color: #e3f2fd; border-color: #1976d2; color: #1565c0; border-width: 3px; z-index: 20; }
+.seat.selected { border-color: #28a745; border-width: 3px; transform: scale(1.1); z-index: 30; }
+
+.seat.mode-layout { cursor: move; border-style: dashed; opacity: 0.9; }
+.seat.mode-power { cursor: crosshair; }
+.active-mode { background-color: #343a40 !important; color: white !important; }
+
+.icon-power { font-size: 10px; position: absolute; top: 2px; right: 4px; }
+.time-badge { font-size: 11px; position: absolute; bottom: 2px; width: 100%; text-align: center; background: rgba(255,255,255,0.8); border-radius: 0 0 8px 8px; font-weight: normal; }
+.my-badge { font-size: 10px; font-weight: bold; color: #1565c0; position: absolute; top: 2px; left: 4px; background: rgba(255,255,255,0.7); padding: 0 2px; border-radius: 3px; }
+.warning-badge { font-size: 9px; color: red; position: absolute; bottom: -15px; background: white; padding: 1px 3px; border-radius: 3px; border: 1px solid red; white-space: nowrap; }
+
+.seat.warning-user { border: 3px solid red !important; animation: pulse 1.5s infinite; }
+@keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255,0,0,0.4); } 70% { box-shadow: 0 0 0 6px rgba(255,0,0,0); } 100% { box-shadow: 0 0 0 0 rgba(255,0,0,0); } }
+
+.status-card { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #eee; }
+.info-text { font-size: 1.2em; margin-bottom: 10px; }
+
+@media (max-width: 768px) {
+    .selector-bar { flex-direction: column; height: auto; gap: 10px; align-items: stretch; padding: 10px; }
+    .center-controls { position: static; transform: none; justify-content: center; }
+    .admin-controls-center { flex-direction: column; gap: 15px; align-items: stretch; }
+}

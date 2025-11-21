@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Lounge</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div id="page-login" class="page active">
+        <div class="center-box">
+            <h1 style="color:#007bff; margin-bottom:30px;">Smart Lounge</h1>
+            <form id="form-login">
+                <input type="text" id="login-id" placeholder="아이디" required>
+                <input type="password" id="login-pw" placeholder="비밀번호" required>
+                <button type="submit" class="btn-blue">로그인</button>
+            </form>
+            <div style="margin-top:20px;">
+                <button class="btn-link" onclick="showPage('page-signup')">회원가입</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-signup" class="page">
+        <div class="center-box">
+            <h2>회원가입</h2>
+            <form id="form-signup">
+                <input type="text" id="sign-name" placeholder="이름 (필수)" required>
+                <input type="text" id="sign-id" placeholder="아이디 (필수)" required>
+                <input type="password" id="sign-pw" placeholder="비밀번호 (필수)" required>
+                
+                <div style="margin:15px 0; border-top:1px solid #eee;"></div>
+                <p style="font-size:12px; color:#666; margin-bottom:5px;">학생인 경우</p>
+                <input type="text" id="sign-std-id" placeholder="학번">
+                
+                <p style="font-size:12px; color:#666; margin-bottom:5px;">관리자인 경우</p>
+                <input type="text" id="sign-admin-code" placeholder="관리자 코드">
+                
+                <button type="submit" class="btn-blue">가입하기</button>
+                <button type="button" class="btn-warning" style="margin-top:10px;" onclick="showPage('page-login')">취소</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="page-main" class="page">
+        <header>
+            <div class="user-info-group">
+                <span id="header-role" style="font-weight:bold; color:#007bff; margin-right:5px;">User</span>
+                <span id="header-name">Guest</span>님
+            </div>
+            <button onclick="logout()" class="btn-red btn-logout">로그아웃</button>
+        </header>
+
+        <div class="selector-bar">
+            <div class="select-group">
+                <select id="building-select" onchange="onBuildingChange()"></select>
+                <select id="lounge-select" onchange="onLoungeChange()"></select>
+            </div>
+            <div id="super-admin-controls" class="hidden center-controls">
+                <button class="btn-small" onclick="openAddBuilding()">+ 건물</button>
+                <button class="btn-small" onclick="openAddLounge()">+ 라운지</button>
+            </div>
+        </div>
+
+        <div id="admin-panel" class="hidden">
+            <div class="admin-tabs">
+                <button onclick="showAdminTab('settings')" class="active">라운지 설정</button>
+                <button onclick="showAdminTab('lost')">분실물 관리</button>
+            </div>
+            
+            <div id="admin-tab-settings" class="admin-controls">
+                <div class="admin-controls-center">
+                    
+                    <div class="group">
+                        <span style="font-weight:bold; font-size:0.9em;">총 좌석:</span>
+                        <input type="number" id="admin-total-seats" value="0">
+                        <button class="btn-small btn-blue" onclick="setTotalSeats()">적용</button>
+                    </div>
+                    
+                    <div class="vertical-line"></div>
+                    
+                    <div class="group">
+                        <button class="btn-small admin-btn" onclick="setAdminMode('layout')">배치 모드</button>
+                        <button class="btn-small admin-btn" onclick="setAdminMode('power')">콘센트 설정</button>
+                        <button id="btn-save-layout" class="btn-small btn-red hidden" onclick="saveLayout()">배치 저장</button>
+                    </div>
+                </div>
+                
+                <div id="admin-msg" class="msg-text"></div>
+            </div>
+
+            <div id="admin-tab-lost" class="hidden" style="padding:20px;">
+                <table class="lost-table">
+                    <thead>
+                        <tr>
+                            <th>날짜</th><th>시간</th><th>건물</th><th>라운지</th><th>좌석</th><th>물건</th><th>관리</th>
+                        </tr>
+                    </thead>
+                    <tbody id="lost-items-body"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="container">
+            <div id="user-sidebar" class="sidebar hidden">
+                <div class="status-card">
+                    <h4>내 이용 현황</h4>
+                    <div id="my-status-text" class="info-text">이용 중인 좌석 없음</div>
+                    <div id="my-time-text" style="color:#666; font-size:0.9em; margin-bottom:10px;"></div>
+                    <button id="btn-checkout" class="btn-red w-100 hidden">퇴실하기</button>
+                </div>
+
+                <div id="reserve-panel" class="status-card hidden" style="border-color:#007bff;">
+                    <h4 style="color:#007bff;">선택된 좌석: <span id="selected-seat-display"></span>번</h4>
+                    
+                    <div id="booking-form">
+                        <label>퇴실 예정 시간</label>
+                        <input type="time" id="reserve-time">
+                        <button onclick="requestReserve()" class="btn-blue w-100">예약하기</button>
+                        <button onclick="cancelSelection()" class="btn-warning w-100" style="margin-top:5px;">취소</button>
+                        <div style="text-align:center; margin-top:10px;">
+                            <span class="btn-link" style="font-size:12px; cursor:pointer;" onclick="toggleLostForm()">여기에 분실물이 있나요?</span>
+                        </div>
+                    </div>
+
+                    <div id="report-lost-form" class="hidden">
+                        <input type="text" id="lost-item-desc" placeholder="물건 설명">
+                        <button onclick="submitLostReport()" class="btn-red w-100">신고 접수</button>
+                        <button onclick="toggleLostForm()" class="btn-warning w-100" style="margin-top:5px;">취소</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-area" id="map-area">
+                <div id="map-placeholder">좌측 상단에서 라운지를 선택하세요</div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
